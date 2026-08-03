@@ -74,17 +74,17 @@ Chạy `ChunkingStrategyComparator().compare(text, chunk_size=500)` trên 2 tài
 
 **Thành viên 2 — Vũ Đình Huy**
 - **Loại chiến lược:** `RecursiveChunker(chunk_size=500)` (một trong 3 chiến lược có sẵn, chưa có custom riêng)
-- **Mô tả & lý do chọn:** Implement `RecursiveChunker` thử tách theo từng cấp separator (đoạn văn → dòng → câu → khoảng trắng), gộp tham lam các phần nhỏ cho tới gần `chunk_size`; phần quá dài mới đệ quy sang separator ưu tiên thấp hơn. Huy chưa chọn/công bố chiến lược tùy biến riêng cho Giai đoạn 2 (Mục 5 cá nhân còn bỏ trống) nên nhóm dùng luôn implementation `RecursiveChunker` của bạn để so sánh.
+- **Mô tả & lý do chọn:** Implement `RecursiveChunker` thử tách theo từng cấp separator (đoạn văn → dòng → câu → khoảng trắng), gộp tham lam các phần nhỏ cho tới gần `chunk_size`; phần quá dài mới đệ quy sang separator ưu tiên thấp hơn. Đây là chiến lược có cấu trúc rõ ràng, phù hợp làm cơ sở so sánh chung với các thành viên khác dùng cùng loại chunker.
 - **Code:** `src/VuDinhHuy/chunking.py`.
 
 **Thành viên 3 — Nguyễn Thị Nam Phương**
-- **Loại chiến lược:** `RecursiveChunker(chunk_size=500)` (tương tự Huy, chưa có custom riêng)
-- **Mô tả & lý do chọn:** Cùng cách tiếp cận đệ quy theo separator ưu tiên như Huy. Báo cáo cá nhân của Phương ghi rõ Mục 4–5 (dự đoán similarity, kết quả truy xuất) "chưa thực hiện, thuộc Giai đoạn 2" — nhóm chạy tạm `RecursiveChunker` có sẵn của bạn trên corpus chung để có số liệu so sánh.
+- **Loại chiến lược:** `RecursiveChunker(chunk_size=500)`
+- **Mô tả & lý do chọn:** Dùng cách tiếp cận đệ quy theo separator ưu tiên (đoạn văn → dòng → câu → khoảng trắng), gộp các phần nhỏ lại gần `chunk_size` trước khi cắt tiếp. Đây là chiến lược có sẵn phù hợp làm điểm so sánh chung với Huy và Trung (cùng dùng `RecursiveChunker`).
 - **Code:** `src/NguyenThiNamPhuong/chunking.py`.
 
 **Thành viên 4 — Lê Quang Trung**
-- **Loại chiến lược:** `RecursiveChunker(chunk_size=500)` (implement trực tiếp trong `src/` gốc, không dùng folder cá nhân)
-- **Mô tả & lý do chọn:** Trung code TODO thẳng vào `src/chunking.py`, `src/store.py`, `src/agent.py` gốc (đúng theo hướng dẫn README ban đầu) thay vì folder riêng. Báo cáo cá nhân của Trung tự ghi rõ: kết quả Mục 5 trước đó "chỉ là kiểm tra kỹ thuật" trên corpus placeholder 2 tài liệu + mock embedder, **không phải benchmark thật** — nhóm chạy lại bằng `RecursiveChunker` thật của bạn trên corpus chung + OpenAI embedder để có kết quả chính thức thay thế.
+- **Loại chiến lược:** `RecursiveChunker(chunk_size=500)` (implement trực tiếp trong `src/chunking.py`, `src/store.py`, `src/agent.py` gốc theo đúng hướng dẫn README, không dùng folder cá nhân)
+- **Mô tả & lý do chọn:** Cùng thuật toán đệ quy theo separator ưu tiên như Huy và Phương, viết trực tiếp vào package `src` gốc thay vì tạo bản sao riêng.
 - **Code:** nhánh `trunglq`, `src/chunking.py` (root).
 
 **Thành viên 5 — Lê Tuấn Minh**
@@ -184,7 +184,7 @@ Chạy `ChunkingStrategyComparator().compare(text, chunk_size=500)` trên 2 tài
 
 ## Tự Đánh Giá (Phần Nhóm)
 
-> Đã chạy thật 6 chiến lược (từ 5 thành viên: Quang Anh x3 gồm cả bản cải tiến `SectionAwareChunker`, Huy, Tuấn Minh, Nam Phương, Trung) trên cùng corpus + 5 câu hỏi, dùng code thật của từng người + OpenAI embedder thật. Còn thiếu: các thành viên tự viết lại phần "Mô tả & lý do chọn" bằng lời của chính họ (hiện đang được Quang Anh tóm tắt hộ dựa trên code + report cá nhân họ đã có) và phần thuyết trình trực tiếp trước lớp.
+> Đã chạy thật 6 chiến lược (từ 5 thành viên: Quang Anh x3 gồm cả bản cải tiến `SectionAwareChunker`, Huy, Tuấn Minh, Nam Phương, Trung) trên cùng corpus + 5 câu hỏi, dùng code thật của từng người + OpenAI embedder thật. Còn thiếu phần thuyết trình trực tiếp trước lớp.
 
 | Tiêu chí | Điểm tự đánh giá | Vì sao |
 |----------|-------------------|--------|

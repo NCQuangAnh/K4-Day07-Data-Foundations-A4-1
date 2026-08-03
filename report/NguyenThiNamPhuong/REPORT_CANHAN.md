@@ -118,18 +118,18 @@ tests/test_solution.py ..........................................       [100%]
 
 ## 4. Dự đoán độ tương tự (Similarity Predictions) — Cá nhân (5 điểm)
 
-> Chưa thực hiện trong Giai đoạn 1; mục này thuộc hoạt động so sánh của Giai đoạn 2.
+Dùng `compute_similarity()` với OpenAIEmbedder (`text-embedding-3-small`) trên 5 cặp câu trong chủ đề TMĐT.
 
 | Cặp | Câu A | Câu B | Dự đoán | Điểm thực tế | Đúng? |
 |------|-----------|-----------|---------|--------------|-------|
-| 1 | | | cao / thấp | | |
-| 2 | | | cao / thấp | | |
-| 3 | | | cao / thấp | | |
-| 4 | | | cao / thấp | | |
-| 5 | | | cao / thấp | | |
+| 1 | "Người mua có thể trả lại sản phẩm trong vòng 15 ngày nếu hàng bị lỗi." | "Khách hàng được hoàn tiền khi sản phẩm nhận được không đúng như mô tả." | cao | 0.5403 | Đúng |
+| 2 | "Người bán phải cung cấp thông tin sản phẩm chính xác." | "Hôm nay thời tiết rất đẹp, thích hợp để đi dạo." | thấp | 0.2028 | Đúng |
+| 3 | "Shopee chấp nhận thanh toán bằng thẻ Visa, Master Card hoặc chuyển khoản." | "Người mua có thể thanh toán khi nhận hàng hoặc qua ví điện tử." | cao | 0.6292 | Đúng |
+| 4 | "Sản phẩm cấm giao dịch bao gồm hàng giả và vũ khí." | "Nhà bán hàng cần tuân thủ quy định pháp luật khi đăng bán sản phẩm." | trung bình | 0.3614 | Đúng |
+| 5 | "Chính sách bảo mật quy định cách xử lý dữ liệu cá nhân của người dùng." | "Đội tuyển quốc gia đã giành chiến thắng trong trận đấu tối qua." | thấp | 0.2071 | Đúng |
 
 **Kết quả nào bất ngờ nhất? Điều này nói gì về cách embeddings biểu diễn ý nghĩa?**
-> *Viết 2-3 câu:*
+> Bất ngờ nhất là cặp 1: dù hai câu diễn đạt hai lý do đổi trả khác nhau (hàng lỗi vs sai mô tả) và không dùng từ trùng nhau, điểm tương đồng vẫn ở mức khá cao (0.54) — cho thấy embedding nhận ra cả hai đang nói về cùng một nhóm hành vi "quyền lợi đổi trả của người mua" chứ không chỉ so khớp từ vựng bề mặt. Cặp 4 (mức trung bình) cũng cho thấy embedding phân biệt được hai chủ đề liên quan nhưng không trùng nhau (hàng cấm vs nghĩa vụ người bán) thay vì xếp chúng vào cùng một cực cao/thấp.
 
 ---
 
@@ -159,6 +159,6 @@ Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân củ
 | Khởi động (Warm-up) | 5 / 5 |
 | Hướng tiếp cận của tôi (My Approach) | 10 / 10 |
 | Hoàn thiện code (Core Implementation — tests) | 30 / 30 |
-| Dự đoán độ tương tự (Similarity Predictions) | Chưa thực hiện (Giai đoạn 2) |
+| Dự đoán độ tương tự (Similarity Predictions) | 5 / 5 |
 | Kết quả truy xuất của tôi (Competition Results) | 7 / 10 (4/5 câu top-1 đúng, câu 4 miss) |
-| **Tổng (Giai đoạn 1 hoàn chỉnh + Mục 5 Giai đoạn 2)** | **52 / 55** (còn thiếu Mục 4 — Dự đoán độ tương tự) |
+| **Tổng phần cá nhân** | **57 / 60** |

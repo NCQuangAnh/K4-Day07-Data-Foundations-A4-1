@@ -112,7 +112,7 @@ Ba cặp có ý nghĩa gần nhau đều không đạt điểm cao, thậm chí 
 
 ## 5. Kết quả truy xuất của tôi (Competition Results) — Cá nhân (10 điểm)
 
-> **Cập nhật:** bảng dưới đây là kết quả benchmark **chính thức**, thay thế cho lần chạy thử tạm thời trước đó (corpus placeholder + mock embedder, xem ghi chú cũ đã gỡ). Corpus chung `data/k4_ecommerce/` (5 tài liệu Shopee + Tiki thật) + đúng 5 câu hỏi thống nhất trong `REPORT_NHOM.md`, chiến lược `RecursiveChunker(chunk_size=500)` (code thật của tôi ở `src/chunking.py` gốc), OpenAI embedder thật (`text-embedding-3-small`).
+Corpus chung `data/k4_ecommerce/` (5 tài liệu Shopee + Tiki thật) và đúng 5 câu hỏi thống nhất trong `REPORT_NHOM.md`. Chiến lược: `RecursiveChunker(chunk_size=500)` (code của tôi ở `src/chunking.py` gốc), chạy với OpenAI embedder thật (`text-embedding-3-small`).
 
 | # | Câu hỏi (Query) | Top-1 chunk truy xuất được (tóm tắt) | Điểm score | Có chunk liên quan trong top-3? | Câu trả lời của Agent (tóm tắt) |
 |---|---|---|---:|---|---|
@@ -137,5 +137,5 @@ Ba cặp có ý nghĩa gần nhau đều không đạt điểm cao, thậm chí 
 | Hướng tiếp cận của tôi (My Approach) | 10 / 10 |
 | Hoàn thiện code (Core Implementation — tests) | 30 / 30 |
 | Dự đoán độ tương tự (Similarity Predictions) | 5 / 5 |
-| Kết quả truy xuất của tôi (Competition Results) | 7 / 10 (4/5 câu top-1 đúng, câu 4 miss — đã chạy bằng corpus thật + OpenAI embedder, thay cho kết quả tạm thời trước đó) |
+| Kết quả truy xuất của tôi (Competition Results) | 7 / 10 (4/5 câu top-1 đúng, câu 4 miss) |
 | **Tổng phần cá nhân** | **57 / 60** |
