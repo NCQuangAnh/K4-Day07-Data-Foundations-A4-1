@@ -1,5 +1,15 @@
 # K4 — Ngày 7: Nền Tảng Dữ Liệu, Embedding & Vector Store
 
+**Nhóm A4-2**
+
+| Họ và tên | MSSV |
+|---|---|
+| Nguyễn Cao Quang Anh | 2A202601352 |
+| Nguyễn Thị Nam Phương | 2A202601720 |
+| Vũ Đình Huy | 2A202601288 |
+| Lê Quang Trung | 2A202601158 |
+| Lê Tuấn Minh | 2A202601390 |
+
 > Bản K4 của Lab 07. Hướng dẫn Codelabs được phát riêng trên lớp/LMS (không kèm trong repo); yêu cầu Giai đoạn 2 riêng xem [K4_VARIANT.md](K4_VARIANT.md).
 
 ---
