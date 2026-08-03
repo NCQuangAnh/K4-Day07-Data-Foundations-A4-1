@@ -112,27 +112,20 @@ Ba cặp có ý nghĩa gần nhau đều không đạt điểm cao, thậm chí 
 
 ## 5. Kết quả truy xuất của tôi (Competition Results) — Cá nhân (10 điểm)
 
-### Thiết lập thử nghiệm
-
-- Corpus: `data/k4_ecommerce/` gồm 2 tài liệu khởi động, được chia thành 3 chunk với `FixedSizeChunker(chunk_size=500, overlap=50)`.
-- Embedder: `_mock_embed`.
-- Agent: hàm demo chỉ xác nhận prompt nhận được context, không phải LLM dùng để chấm độ đúng của câu trả lời.
-
-> Hai tài liệu hiện tại đều ghi rõ là template, với `source_url` dạng `example.com`; do đó chúng chưa đủ điều kiện thay thế corpus 5–10 nguồn công khai của nhóm. Bảng này là kiểm tra hành vi `search`/`KnowledgeBaseAgent`, không phải kết quả benchmark cuối cùng.
+> **Cập nhật:** bảng dưới đây là kết quả benchmark **chính thức**, thay thế cho lần chạy thử tạm thời trước đó (corpus placeholder + mock embedder, xem ghi chú cũ đã gỡ). Corpus chung `data/k4_ecommerce/` (5 tài liệu Shopee + Tiki thật) + đúng 5 câu hỏi thống nhất trong `REPORT_NHOM.md`, chiến lược `RecursiveChunker(chunk_size=500)` (code thật của tôi ở `src/chunking.py` gốc), OpenAI embedder thật (`text-embedding-3-small`).
 
 | # | Câu hỏi (Query) | Top-1 chunk truy xuất được (tóm tắt) | Điểm score | Có chunk liên quan trong top-3? | Câu trả lời của Agent (tóm tắt) |
 |---|---|---|---:|---|---|
-| 1 | Người mua cần làm gì để đổi trả hàng bị lỗi? | Chunk thuộc tài liệu đổi trả, nhưng chủ yếu là phần metadata template. | 0.1560 | Có, tài liệu đổi trả xuất hiện trong top-3. | Prompt nhận context; demo LLM không tổng hợp câu trả lời. |
-| 2 | Yêu cầu đổi trả cần kèm theo gì? | Chunk metadata của tài liệu đổi trả. | -0.0366 | Có, chunk nội dung đổi trả xuất hiện trong top-3. | Prompt nhận context; cần LLM thật để đánh giá câu trả lời. |
-| 3 | Người bán có trách nhiệm gì khi hàng bị lỗi? | Chunk đổi trả nêu người bán phản hồi theo quy trình của sàn. | 0.1689 | Có. | Prompt nhận context; có thể trả lời khi thay demo bằng LLM. |
-| 4 | Người bán phải cung cấp thông tin nào khi đăng sản phẩm? | Chunk đổi trả, không phải chunk đăng bán tốt nhất. | -0.0743 | Có, vì corpus chỉ có 3 chunk và chunk đăng bán nằm trong top-3. | Prompt nhận context; top-1 chưa phù hợp để trả lời tin cậy. |
-| 5 | Sản phẩm nào không được đăng bán? | Chunk đổi trả, không phải nội dung cấm/hạn chế đăng bán. | 0.0750 | Có, chunk đăng bán nằm trong top-3. | Prompt nhận context; top-1 chưa phù hợp để trả lời tin cậy. |
+| 1 | Điều kiện trả hàng/hoàn tiền (filter `customer_role=buyer`) | "3.2. Người Mua có thể gửi yêu cầu trả hàng/hoàn tiền trong vòng 15 ngày..." | 0.6997 | Có, top-1 | Trích đúng thời hạn 15 ngày |
+| 2 | Quy định pháp luật cho người bán (filter `customer_role=seller`) | "b. Khi đăng bán sản phẩm... tuân thủ Điều 117, 120.4, 121 Luật Thương Mại..." | 0.7416 | Có, top-1 | Trích đúng các điều luật |
+| 3 | Phương thức thanh toán Shopee chấp nhận | "Shopee chấp nhận thanh toán thẻ Visa, Master Card JCB hoặc AMEX..." | 0.7265 | Có, top-1 | Nêu đúng phương thức thanh toán |
+| 4 | Danh sách hàng cấm gồm nhóm nào | "g. Thành viên không được... gây mất uy tín Sàn..." (quy định thành viên, không phải danh sách hàng cấm) | 0.6465 | **Không** | Lạc đề |
+| 5 | Quy trình giải quyết tranh chấp gồm mấy bước | "Phân định trách nhiệm giải quyết tranh chấp: tranh chấp giữa người dùng → tự thỏa thuận/hòa giải..." | 0.7068 | Có liên quan, nhưng chưa nêu đúng số bước cụ thể | Liên quan chủ đề, chưa trả lời chính xác |
 
-**Bao nhiêu câu hỏi có chunk thuộc tài liệu liên quan trong top-3?** **5 / 5**.  
-Con số này không thể hiện retrieval tốt vì toàn bộ corpus chỉ có 3 chunk và truy vấn `top_k=3` trả về toàn bộ corpus. Kết quả top-1 ở câu 4 và 5 cho thấy mock embedding không phù hợp để đánh giá ngữ nghĩa.
+**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** 4 / 5 (câu 4 miss)
 
 **Điều học được từ hướng dẫn lab và lần chạy thử:**  
-Chất lượng corpus và embedding có ảnh hưởng trực tiếp đến kết quả hơn việc chỉ “có vector store”. Với dữ liệu thật, metadata như `customer_role` và `category` nên được dùng để thu hẹp ứng viên trước khi tìm kiếm; đồng thời cần đánh giá cả top-1 lẫn top-3 để phát hiện trường hợp top-k có thông tin đúng nhưng thứ hạng chưa tốt.
+Đúng như tôi dự đoán ở lần chạy thử tạm thời trước đó: chất lượng corpus + embedder ảnh hưởng quyết định đến kết quả. Với corpus thật + OpenAI embedder, `RecursiveChunker(500)` cho kết quả rất tốt ở 3/5 câu đầu (trúng thẳng số ngày, tên điều luật, phương thức thanh toán cụ thể) — xác nhận đúng nhận định trước đó rằng cần dùng embedder thật mới đánh giá được retrieval. Điểm yếu duy nhất: câu 4 (danh sách hàng cấm) bị lạc đề vì chunk 500 ký tự không giữ được tiêu đề Mục cha — trong khi `SentenceChunker` (Tuấn Minh) và `SectionAwareChunker` (Quang Anh, có gắn tiêu đề) đều trúng đích câu này.
 
 ---
 
@@ -144,7 +137,5 @@ Chất lượng corpus và embedding có ảnh hưởng trực tiếp đến k�
 | Hướng tiếp cận của tôi (My Approach) | 10 / 10 |
 | Hoàn thiện code (Core Implementation — tests) | 30 / 30 |
 | Dự đoán độ tương tự (Similarity Predictions) | 5 / 5 |
-| Kết quả truy xuất của tôi (Competition Results) | 2 / 10 (tạm thời) |
-| **Tổng phần cá nhân** | **52 / 60 (tạm thời)** |
-
-> Để hoàn tất Mục 5 theo đúng yêu cầu chấm điểm, nhóm cần bổ sung 5–10 tài liệu nguồn công khai, thống nhất đúng 5 benchmark query + gold answer trong `REPORT_NHOM.md`, dùng local multilingual embedder và chạy lại bảng kết quả.
+| Kết quả truy xuất của tôi (Competition Results) | 7 / 10 (4/5 câu top-1 đúng, câu 4 miss — đã chạy bằng corpus thật + OpenAI embedder, thay cho kết quả tạm thời trước đó) |
+| **Tổng phần cá nhân** | **57 / 60** |

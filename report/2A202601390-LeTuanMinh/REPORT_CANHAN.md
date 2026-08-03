@@ -104,20 +104,20 @@ collected 42 items
 
 ## 5. Kết quả truy xuất của tôi (Competition Results) — Cá nhân (10 điểm)
 
-Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân của bạn trong gói `src`. **5 câu hỏi này phải trùng với các thành viên cùng nhóm** (xem `REPORT_NHOM.md`).
+Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân của bạn trong gói `src`. **5 câu hỏi này phải trùng với các thành viên cùng nhóm** (xem `REPORT_NHOM.md`). Chiến lược: `SentenceChunker(max_sentences_per_chunk=3)`, corpus chung `data/k4_ecommerce/` (5 tài liệu Shopee + Tiki), OpenAI embedder thật.
 
 | # | Câu hỏi (Query) | Top-1 Chunk truy xuất được (tóm tắt) | Điểm Score | Có liên quan không? (Relevant) | Câu trả lời của Agent (tóm tắt) |
 |---|-------|--------------------------------|-------|-----------|------------------------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
-| 4 | | | | | |
-| 5 | | | | | |
+| 1 | Điều kiện trả hàng/hoàn tiền (filter `customer_role=buyer`) | "3.2. Người Mua có thể gửi yêu cầu trả hàng/hoàn tiền trong vòng 15 ngày..." | 0.6997 | Có, top-1 | Trích đúng thời hạn 15 ngày |
+| 2 | Quy định pháp luật cho người bán (filter `customer_role=seller`) | "b. Khi đăng bán sản phẩm... tuân thủ Điều 117, 120.4, 121 Luật Thương Mại..." | 0.7411 | Có, top-1 | Trích đúng các điều luật |
+| 3 | Phương thức thanh toán Shopee chấp nhận | "V. Quy trình thanh toán Người Mua và Người Bán có thể tham khảo..." | 0.7562 | Có, top-1 | Nêu đúng phương thức thanh toán |
+| 4 | Danh sách hàng cấm gồm nhóm nào | "Danh sách sản phẩm cấm giao dịch... 2.1. Hàng vi phạm bản quyền..." | **0.7045** | **Có, top-1 — duy nhất trong cả nhóm (lúc đó) trúng thẳng câu này** | Xác định đúng, trích được nhóm đầu tiên |
+| 5 | Quy trình giải quyết tranh chấp gồm mấy bước | "Tùy vào thỏa thuận giữa Người Mua và Người Bán mà Shopee có thể hỗ trợ..." | 0.6784 | Có liên quan nhưng chưa nêu đúng số bước cụ thể | Liên quan chủ đề, chưa trả lời chính xác "mấy bước" |
 
-**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** __ / 5
+**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** 5 / 5 (4 câu top-1 chính xác, câu 5 liên quan nhưng chưa chính xác tuyệt đối)
 
 **Điều hay nhất tôi học được từ thành viên khác / nhóm khác (qua demo):**
-> Tôi học được rằng chiến lược chunking và metadata có ảnh hưởng rất lớn đến chất lượng retrieval. Một số bạn dùng chunk ngắn và có metadata lọc tốt, nên câu hỏi cụ thể trả về kết quả tốt hơn so với cách chunk quá dài hoặc thiếu thông tin ngữ cảnh.
+> Tôi học được rằng chiến lược chunking và metadata có ảnh hưởng rất lớn đến chất lượng retrieval. Một số bạn dùng chunk ngắn và có metadata lọc tốt, nên câu hỏi cụ thể trả về kết quả tốt hơn so với cách chunk quá dài hoặc thiếu thông tin ngữ cảnh. Kết quả thực tế xác nhận điều này: `SentenceChunker` (chunk rất nhỏ, 3 câu) là chiến lược **duy nhất** trong nhóm trúng đích câu 4 (danh sách hàng cấm) ở lần chạy đầu tiên — vì chunk nhỏ tình cờ giữ trọn câu tiêu đề "Danh sách sản phẩm cấm giao dịch" cùng với nhóm đầu tiên trong cùng 1 chunk, trong khi các chunk lớn hơn (Recursive 500, Heading 2000) lại pha loãng tín hiệu này với nội dung xung quanh.
 
 ---
 
@@ -129,5 +129,5 @@ Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân củ
 | Hướng tiếp cận của tôi (My Approach) | 10 / 10 |
 | Hoàn thiện code (Core Implementation — tests) | 30 / 30 |
 | Dự đoán độ tương tự (Similarity Predictions) | 5 / 5 |
-| Kết quả truy xuất của tôi (Competition Results) | 10 / 10 |
-| **Tổng phần cá nhân** | **60 / 60** |
+| Kết quả truy xuất của tôi (Competition Results) | 9 / 10 (5/5 câu liên quan trong top-3, 4/5 chính xác tuyệt đối ở top-1 — điểm cao nhất nhóm, đã chạy thật thay vì điểm ước tính trước đó) |
+| **Tổng phần cá nhân** | **59 / 60** |

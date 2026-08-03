@@ -107,20 +107,20 @@ Tôi ghi dự đoán trước khi chạy và dùng model đa ngữ `sentence-tra
 
 ## 5. Kết quả truy xuất của tôi (Competition Results) — Cá nhân (10 điểm)
 
-Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân của bạn trong gói `src`. **5 câu hỏi này phải trùng với các thành viên cùng nhóm** (xem `REPORT_NHOM.md`).
+Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân của bạn trong gói `src`. **5 câu hỏi này phải trùng với các thành viên cùng nhóm** (xem `REPORT_NHOM.md`). Chiến lược: `RecursiveChunker(chunk_size=500)`, corpus chung `data/k4_ecommerce/` (5 tài liệu Shopee + Tiki), OpenAI embedder thật (`text-embedding-3-small`).
 
 | # | Câu hỏi (Query) | Top-1 Chunk truy xuất được (tóm tắt) | Điểm Score | Có liên quan không? (Relevant) | Câu trả lời của Agent (tóm tắt) |
 |---|-------|--------------------------------|-------|-----------|------------------------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
-| 4 | | | | | |
-| 5 | | | | | |
+| 1 | Điều kiện trả hàng/hoàn tiền (filter `customer_role=buyer`) | "3.2. Người Mua có thể gửi yêu cầu trả hàng/hoàn tiền trong vòng 15 ngày kể từ lúc giao hàng thành công..." | 0.6994 | Có, top-1 | Trích đúng thời hạn 15 ngày |
+| 2 | Quy định pháp luật cho người bán (filter `customer_role=seller`) | "b. Khi đăng bán sản phẩm... tuân thủ Điều 117, Điều 120.4, Điều 121 Luật Thương Mại..." | 0.7416 | Có, top-1 | Trích đúng các điều luật |
+| 3 | Phương thức thanh toán Shopee chấp nhận | "V. Quy trình thanh toán..." + chunk về thẻ Visa/Master/JCB/AMEX | 0.7244 | Có, top-1/2 | Nêu đúng phương thức thanh toán |
+| 4 | Danh sách hàng cấm gồm nhóm nào | "g. Thành viên không được... gây mất uy tín Sàn..." (quy định thành viên, không phải danh sách hàng cấm) | 0.6465 | **Không** | Lạc đề — chunk gần nhất chỉ nhắc "Danh sách sản phẩm bị cấm/hạn chế" mà không liệt kê |
+| 5 | Quy trình giải quyết tranh chấp gồm mấy bước | "Phân định trách nhiệm giải quyết tranh chấp: tranh chấp giữa người dùng → tự thỏa thuận/hòa giải..." | 0.7068 | Có liên quan, nhưng không nêu đúng số bước cụ thể | Liên quan chủ đề nhưng chưa trả lời đúng "mấy bước" |
 
-**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** __ / 5
+**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** 4 / 5 (câu 4 miss)
 
 **Điều hay nhất tôi học được từ thành viên khác / nhóm khác (qua demo):**
-> *Viết 2-3 câu:*
+> `RecursiveChunker(500)` của tôi cho kết quả rất tốt ở câu 1–3 (trúng thẳng chi tiết cụ thể như số ngày, tên điều luật) — ngang bằng hoặc tốt hơn cả chiến lược heading-based của Quang Anh ở các câu này. Tuy nhiên chunk 500 ký tự không giữ được tiêu đề Mục cha, nên bị lạc đề ở câu 4 (danh sách hàng cấm) — trong khi `SentenceChunker` của Tuấn Minh và `SectionAwareChunker` (bản cải tiến của Quang Anh, có gắn tiêu đề Mục vào chunk) đều trúng câu này. Bài học: chunk nhỏ tốt cho việc bám sát dữ kiện cụ thể, nhưng cần thêm cơ chế giữ ngữ cảnh chủ đề (heading) để không lạc đề với các mục liệt kê dài.
 
 ---
 
@@ -132,5 +132,5 @@ Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân củ
 | Hướng tiếp cận của tôi (My Approach) | / 10 |
 | Hoàn thiện code (Core Implementation — tests) | / 30 |
 | Dự đoán độ tương tự (Similarity Predictions) | / 5 |
-| Kết quả truy xuất của tôi (Competition Results) | / 10 |
-| **Tổng phần cá nhân** | **/ 60** |
+| Kết quả truy xuất của tôi (Competition Results) | 7 / 10 (4/5 câu top-1 đúng, câu 4 miss) |
+| **Tổng phần cá nhân** | **(các mục 1-4 tự điền) + 7/10 ở Mục 5** |
