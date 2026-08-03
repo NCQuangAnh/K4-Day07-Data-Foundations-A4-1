@@ -92,7 +92,7 @@ Chạy `ChunkingStrategyComparator().compare(text, chunk_size=500)` trên 2 tài
 - **Mô tả & lý do chọn:** Tách câu theo dấu kết thúc câu, gộp mỗi 3 câu thành 1 chunk. Tuấn Minh chọn chiến lược này vì cho rằng "mỗi câu thường mang ý nghĩa rõ ràng nên dễ truy xuất hơn" với văn bản chính sách.
 - **Code:** `src/2A202601390-LeTuanMinh/chunking.py`.
 
-> Lưu ý minh bạch: 4 dòng trên chạy bằng **code thật** mỗi người đã tự viết và commit vào nhánh riêng của họ (`Huy`, `LeTuanMinh`, `NamPhuong`, `trunglq`), do Quang Anh trực tiếp thực thi trên máy dùng chung của nhóm với corpus + 5 câu hỏi thống nhất ở trên, dùng OpenAI embedder thật (`text-embedding-3-small`) — không phải số liệu tự dựng.
+
 
 ### So Sánh Giữa Các Thành Viên
 
