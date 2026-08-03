@@ -1,7 +1,7 @@
 # Báo Cáo Cá Nhân — Lab 7: Embedding & Vector Store
 
 **Họ tên:** Nguyễn Cao Quang Anh
-**Nhóm:** A4-1
+**Nhóm:** A4-2
 **Ngày:** 2026-08-03
 
 > **Nộp 1 bản / sinh viên.** Phần nhóm (lựa chọn tài liệu, thiết kế chiến lược, bộ câu hỏi đánh giá, demo) nộp chung 1 bản trong `REPORT_NHOM.md`. Chi tiết thang điểm: `docs/SCORING.md`.
@@ -128,22 +128,20 @@ tests/test_solution.py::TestEmbeddingStoreDeleteDocument (3 tests) PASSED
 
 ## 5. Kết quả truy xuất của tôi (Competition Results) — Cá nhân (10 điểm)
 
-> ⏳ **Chưa điền — cần đợi nhóm chốt xong 5 câu hỏi đánh giá (benchmark queries) và bộ tài liệu `data/k4_ecommerce/` đầy đủ (5–10 tài liệu thật) ở Giai đoạn 2.** Phần này bắt buộc chạy đúng 5 câu hỏi trùng với các thành viên trong nhóm (xem `REPORT_NHOM.md`).
-
-Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân của bạn trong gói `src`. **5 câu hỏi này phải trùng với các thành viên cùng nhóm** (xem `REPORT_NHOM.md`).
+Đã chốt 5 câu hỏi đánh giá và bộ tài liệu (`data/k4_ecommerce/`, 4 tài liệu Shopee thật). Chiến lược cá nhân: **`HeadingChunker`** (custom, chia theo heading La Mã I./II./III..., xem `src/NguyenCaoQuangAnh/heading_chunker.py`). Chạy bằng `scripts/phase2_benchmark.py` với **OpenAI embedder thật** (`text-embedding-3-small`), so với baseline `FixedSizeChunker` — chi tiết đầy đủ ở `REPORT_NHOM.md` Mục 2–4.
 
 | # | Câu hỏi (Query) | Top-1 Chunk truy xuất được (tóm tắt) | Điểm Score | Có liên quan không? (Relevant) | Câu trả lời của Agent (tóm tắt) |
 |---|-------|--------------------------------|-------|-----------|------------------------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
-| 4 | | | | | |
-| 5 | | | | | |
+| 1 | Điều kiện trả hàng/hoàn tiền (filter `customer_role=buyer`) | Đầu Mục 3 "Điều kiện yêu cầu trả hàng/hoàn tiền" của chính sách trả hàng | 0.6464 | Có | Agent tổng hợp đúng các điều kiện (không nhận hàng, hàng lỗi/giả, giao sai, Trả hàng COM...) |
+| 2 | Quy định pháp luật cho người bán (filter `customer_role=seller`) | Đoạn mở đầu + "Nguyên tắc chung" của Quy định đăng bán, có nêu Điều 117/120.4/121 Luật Thương mại | 0.7104 | Có | Agent trích đúng các điều luật liên quan |
+| 3 | Phương thức thanh toán Shopee chấp nhận | Trọn Mục V "Quy trình thanh toán" (Quy chế 2025) | 0.7182 | Có | Agent liệt kê đủ COD/ví điện tử/chuyển khoản/SPayLater |
+| 4 | Danh sách hàng cấm gồm nhóm nào | Đoạn về quy định thành viên (IX.1), không phải danh sách hàng cấm (IX.2) | 0.5999 | **Không** | Agent trả lời lạc đề — xem phân tích lỗi ở `REPORT_NHOM.md` |
+| 5 | Quy trình giải quyết tranh chấp gồm mấy bước | Các bước quy trình **mua hàng** (Mục III.1), không phải quy trình tranh chấp | 0.6760 | **Không** | Agent nhầm sang mô tả quy trình mua hàng — xem phân tích lỗi ở `REPORT_NHOM.md` |
 
-**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** __ / 5
+**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** 3 / 5
 
-**Điều hay nhất tôi học được từ thành viên khác / nhóm khác (qua demo):**
-> *Viết 2-3 câu:*
+**Điều hay nhất tôi học được (tự phản tư vì nhóm chưa demo xong):**
+> Chiến lược chunking tốt (heading-based) cải thiện rõ 3/5 câu nhờ giữ trọn ngữ cảnh điều khoản, nhưng không cứu được 2 câu còn lại vì bản chất vấn đề nằm ở cấu trúc văn bản (nhiều đoạn "Bước 1, 2, 3" trùng khuôn mẫu, và danh sách liệt kê quá dài không có chunk tóm tắt) chứ không phải do tham số chunking. Bài học: chunking strategy chỉ giải quyết một phần bài toán retrieval — cần kết hợp thêm ngữ cảnh (heading cha) hoặc thiết kế chunk tóm tắt riêng cho câu hỏi tổng hợp.
 
 ---
 
@@ -155,5 +153,5 @@ Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân củ
 | Hướng tiếp cận của tôi (My Approach) | 10 / 10 |
 | Hoàn thiện code (Core Implementation — tests) | 30 / 30 |
 | Dự đoán độ tương tự (Similarity Predictions) | 5 / 5 |
-| Kết quả truy xuất của tôi (Competition Results) | __ / 10 (đợi Giai đoạn 2) |
-| **Tổng phần cá nhân** | **50 / 60 (tạm tính)** |
+| Kết quả truy xuất của tôi (Competition Results) | 8 / 10 |
+| **Tổng phần cá nhân** | **58 / 60 (tạm tính)** |
