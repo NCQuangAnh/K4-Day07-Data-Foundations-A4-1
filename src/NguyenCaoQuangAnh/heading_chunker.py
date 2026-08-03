@@ -70,7 +70,7 @@ class SectionAwareChunker:
     TOP_HEADING = re.compile(r"^[IVXLCDM]+\.\s+\S")
     SUB_HEADING = re.compile(r"^\d+\.\s+\S")
 
-    def __init__(self, max_chunk_size: int | None = 1200) -> None:
+    def __init__(self, max_chunk_size: int | None = 400) -> None:
         self.max_chunk_size = max_chunk_size
 
     def chunk(self, text: str) -> list[str]:

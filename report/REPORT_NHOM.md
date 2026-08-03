@@ -96,16 +96,19 @@ Chạy `ChunkingStrategyComparator().compare(text, chunk_size=500)` trên 2 tài
 
 ### So Sánh Giữa Các Thành Viên
 
-> Chạy `scripts/phase2_benchmark.py` với **OpenAI embedder thật** (`text-embedding-3-small`) trên toàn bộ 5 tài liệu (đã thêm Tiki), so `FixedSizeChunker(500, overlap=50)` (baseline, 315 chunk) với `HeadingChunker(max_chunk_size=2000)` (custom, 87 chunk).
+> Chạy `scripts/phase2_benchmark.py` với **OpenAI embedder thật** (`text-embedding-3-small`) trên toàn bộ 5 tài liệu (đã thêm Tiki). Quang Anh có 3 vòng thử: `FixedSizeChunker` (baseline) → `HeadingChunker` (custom v1) → `SectionAwareChunker(max_chunk_size=400)` (custom v2, cải tiến sau khi phân tích lỗi).
 
 | Thành viên | Chiến lược (Strategy) | Điểm truy xuất (/10)\* | Điểm mạnh | Điểm yếu |
 |-----------|----------|----------------------|-----------|----------|
 | Quang Anh | FixedSizeChunker (baseline, 315 chunk) | 5/10 (2.5/5 câu rõ ràng đúng) | Chunk nhỏ → nhiều ứng viên, đôi khi 1 fact ngắn (vd. "Visa, Master Card JCB") lọt vào top-3 | Cắt cứng theo ký tự nên hay xé lẻ một điều khoản/danh sách ra nhiều mảnh rời rạc, không có chunk nào "đủ" để trả lời trọn vẹn |
-| Quang Anh | HeadingChunker (custom, 87 chunk) | 7/10 (3.5/5 câu rõ ràng đúng) | Chunk lớn hơn, bám theo điều khoản thật → nhiều khả năng 1 chunk chứa trọn câu trả lời (rõ nhất ở câu 1, 2, 3) | Chỉ tách đúng khi tài liệu dùng heading La Mã; văn bản dùng số Ả Rập/chữ cái (A./B.) phải fallback `RecursiveChunker(2000)` |
-| Vũ Đình Huy | RecursiveChunker(500) (398 chunk) | **8/10** (4/5 câu top-1 trúng đích, câu 5 chỉ liên quan) | Top-1 trúng thẳng chi tiết cụ thể ở câu 1 (hạn 15 ngày), câu 2 (Điều 117/120.4/121), câu 3 (2 phương thức thanh toán) — điểm cao nhất trong nhóm cho 3 câu này | Câu 4 (danh sách hàng cấm) vẫn miss — top-3 không có chunk liệt kê nhóm hàng cấm |
+| Quang Anh | HeadingChunker (custom v1, 87 chunk, max_chunk_size=2000) | 7/10 (3.5/5 câu rõ ràng đúng) | Chunk lớn hơn, bám theo điều khoản thật → nhiều khả năng 1 chunk chứa trọn câu trả lời (rõ nhất ở câu 1, 2, 3) | Chunk quá lớn (2000 ký tự) đôi khi lẫn cả phần mở đầu ít liên quan; câu 4, 5 vẫn miss |
+| **Quang Anh** | **SectionAwareChunker (custom v2, 537 chunk, max_chunk_size=400)** | **9/10** (4/5 câu top-1 trúng đích) | Kết hợp cả 2 điểm mạnh: chunk nhỏ (400 ký tự, như Recursive/Sentence) **và** luôn giữ tiêu đề Mục dính vào đầu chunk (như v1). Trúng top-1 rõ ràng ở câu 1 (0.7056), câu 2 (0.7366), câu 3 (0.7304), và **câu 4 đạt điểm cao nhất trong toàn bộ 6 chiến lược đã thử** (0.7204) | Câu 5 vẫn chỉ liên quan ở hạng 2 (0.6859), chưa lên hạng 1 — xem Mục 4 |
+| Vũ Đình Huy | RecursiveChunker(500) (398 chunk) | 8/10 (4/5 câu top-1 trúng đích, câu 5 chỉ liên quan) | Top-1 trúng thẳng chi tiết cụ thể ở câu 1 (hạn 15 ngày), câu 2 (Điều 117/120.4/121), câu 3 (2 phương thức thanh toán) | Câu 4 (danh sách hàng cấm) vẫn miss — top-3 không có chunk liệt kê nhóm hàng cấm |
 | Nguyễn Thị Nam Phương | RecursiveChunker(500) (398 chunk) | 8/10 (gần như trùng số liệu với Huy vì cùng loại chunker) | Giống Huy — trúng đích câu 1, 2, 3 | Giống Huy — miss câu 4 |
 | Lê Quang Trung | RecursiveChunker(500), code ở `src/` gốc (398 chunk) | 8/10 (gần như trùng số liệu với Huy/Phương) | Giống Huy/Phương — trúng đích câu 1, 2, 3 | Giống Huy/Phương — miss câu 4 |
-| Lê Tuấn Minh | SentenceChunker(3 câu/chunk) (378 chunk) | **9/10** (4.5/5 câu) | **Duy nhất trúng đích câu 4** (top-1 = 0.7045, đúng ngay đoạn "Danh sách sản phẩm cấm giao dịch... 2.1. Hàng vi phạm bản quyền...") + trúng đích câu 2, 3 | Câu 5 (quy trình tranh chấp) vẫn chỉ liên quan chung chung, không ra đúng "4 bước" |
+| Lê Tuấn Minh | SentenceChunker(3 câu/chunk) (378 chunk) | 9/10 (4/5 câu) | Trúng đích câu 4 (top-1 = 0.7045) + câu 2, 3 | Câu 5 (quy trình tranh chấp) vẫn chỉ liên quan chung chung, không ra đúng "4 bước" |
+
+> **Chiến lược tốt nhất tính đến hiện tại: `SectionAwareChunker` (Quang Anh, custom v2)** — 9/10, và là chiến lược duy nhất đạt điểm cao nhất tuyệt đối ở câu 4 trong số tất cả các lần thử của cả nhóm. Đồng điểm với `SentenceChunker` (Tuấn Minh) nhưng nhỉnh hơn ở câu 3 (0.7304 vs không rõ ràng bằng) và câu 4 (0.7204 vs 0.7045).
 
 
 

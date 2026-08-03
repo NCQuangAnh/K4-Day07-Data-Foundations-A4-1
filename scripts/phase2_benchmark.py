@@ -20,7 +20,7 @@ load_dotenv(dotenv_path=Path(__file__).resolve().parents[1] / ".env", override=T
 from ingest import chunk_document, load_documents
 from src.NguyenCaoQuangAnh.chunking import FixedSizeChunker
 from src.NguyenCaoQuangAnh.embeddings import OpenAIEmbedder
-from src.NguyenCaoQuangAnh.heading_chunker import HeadingChunker
+from src.NguyenCaoQuangAnh.heading_chunker import HeadingChunker, SectionAwareChunker
 from src.NguyenCaoQuangAnh.store import EmbeddingStore
 
 DATA_DIR = "data/k4_ecommerce"
@@ -86,7 +86,8 @@ def run_strategy(name: str, chunker) -> None:
 
 def main() -> int:
     run_strategy("Baseline - FixedSizeChunker(chunk_size=500, overlap=50)", FixedSizeChunker(chunk_size=500, overlap=50))
-    run_strategy("Custom - HeadingChunker(max_chunk_size=2000)", HeadingChunker(max_chunk_size=2000))
+    run_strategy("Custom v1 - HeadingChunker(max_chunk_size=2000)", HeadingChunker(max_chunk_size=2000))
+    run_strategy("Custom v2 - SectionAwareChunker(max_chunk_size=400)", SectionAwareChunker(max_chunk_size=400))
     return 0
 
 
